@@ -4,10 +4,16 @@ import threading
 import requests
 import re
 import time
+from dotenv import load_dotenv
+import os
 
-API_URL = "https://test.icorp.uz/interview.php"
-PORT = 8000
-MSG = "Test task completed ✅"
+load_dotenv()  # load .env variables
+
+API_URL = os.getenv("API_URL")
+PORT = int(os.getenv("PORT", 8000))
+MSG = os.getenv("MSG", "Hello")
+TIMEOUT = int(os.getenv("TIMEOUT", 20))
+PUBLIC_URL = os.getenv("PUBLIC_URL")
 
 part2_data = None
 
@@ -42,8 +48,6 @@ def main():
 
     time.sleep(1)
 
-    PUBLIC_URL = "https://a50db538b777.ngrok-free.app"
-
     payload = {"msg": MSG, "url": PUBLIC_URL}
     print("[1] Sending POST to API...")
     res = requests.post(API_URL, json=payload)
@@ -54,7 +58,7 @@ def main():
     print("[2] Waiting for part2...")
 
     start = time.time()
-    while part2_data is None and time.time() - start < timeout:
+    while part2_data is None and time.time() - start < TIMEOUT:
         time.sleep(0.5)
 
     if part2_data is None:
